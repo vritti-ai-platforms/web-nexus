@@ -1,6 +1,7 @@
 import { loadRemote } from '@module-federation/runtime';
 import { Suspense, useEffect, useState } from 'react';
 import { useRoutes } from 'react-router-dom';
+import { MicrofrontendSkeletonFullPage } from './MircrofrontendFullPageSkeleton';
 
 /**
  * Loads a remote module from a federated application
@@ -71,6 +72,9 @@ export const RemoteRoutes = ({
 
         console.log(`[RemoteRoutes] Extracted routes with dataKey="${dataKey}":`, extractedRoutes);
         setRoutes(extractedRoutes);
+
+        // Add minimum delay to show skeleton for smoother UX
+        await new Promise((resolve) => setTimeout(resolve, 500));
         setReady(true);
       } catch (error) {
         console.error(`[RemoteRoutes] Error initializing routes:`, error);
@@ -96,7 +100,7 @@ export const RemoteRoutes = ({
 
   // Loading state
   if (!ready) {
-    return <div>Loading remote routes...</div>;
+    return <MicrofrontendSkeletonFullPage />;
   }
 
   // Debug: Log what useRoutes returned
@@ -104,5 +108,5 @@ export const RemoteRoutes = ({
   console.log(`[RemoteRoutes] Routes being used:`, routes);
 
   // Render the loaded routes
-  return <Suspense fallback={<div>Loading...</div>}>{routing}</Suspense>;
+  return <Suspense fallback={<MicrofrontendSkeletonFullPage />}>{routing}</Suspense>;
 };

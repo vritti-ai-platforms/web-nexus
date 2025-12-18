@@ -3,6 +3,17 @@ import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 
 export default defineConfig({
+  html: {
+    tags: [
+      {
+        tag: 'script',
+        head: true,
+        append: false, // Insert at beginning of head, before other scripts
+        // Inline script to set dark mode before first paint
+        children: `(function(){var t=localStorage.getItem('theme'),d=window.matchMedia('(prefers-color-scheme:dark)').matches;if(t==='dark'||(!t&&d))document.documentElement.classList.add('dark');})();`,
+      },
+    ],
+  },
   server: {
     port: 3012,
     proxy: {
