@@ -52,6 +52,10 @@ export default defineConfig({
           singleton: true,
           eager: true,
         },
+        '@tanstack/react-query': {
+          singleton: true,
+          eager: true,
+        },
       },
       dts: false,
     }),
