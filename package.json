@@ -15,7 +15,7 @@
   "dependencies": {
     "@module-federation/enhanced": "^0.21.0",
     "@module-federation/rsbuild-plugin": "^0.21.0",
-    "@vritti/quantum-ui": "file:.yalc/@vritti/quantum-ui",
+    "@vritti/quantum-ui": "0.1.23",
     "axios": "^1.12.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
