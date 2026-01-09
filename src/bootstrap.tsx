@@ -6,7 +6,6 @@ import './index.css';
 import App from './App';
 import { ALL_REMOTES } from './config/remotes.config';
 
-
 /**
  * Register all remote micro-frontends at startup
  * This allows the host to dynamically load routes from all remotes

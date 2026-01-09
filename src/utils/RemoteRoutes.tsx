@@ -1,6 +1,6 @@
 import { loadRemote } from '@module-federation/runtime';
-import { Suspense, useEffect, useState } from 'react';
-import { useRoutes } from 'react-router-dom';
+import { Suspense, useCallback, useEffect, useState } from 'react';
+import { type RouteObject, useRoutes } from 'react-router-dom';
 import { MicrofrontendSkeletonFullPage } from './MircrofrontendFullPageSkeleton';
 
 /**
@@ -13,7 +13,7 @@ const loadRemoteModule = async (remoteName: string, moduleName: string) => {
   try {
     const module = await loadRemote(`${remoteName}/${moduleName}`);
     console.log(`[RemoteRoutes] Loaded module ${remoteName}/${moduleName}:`, module);
-    return (module as any)?.default || module;
+    return (module as { default?: unknown })?.default || module;
   } catch (error) {
     console.error(`[RemoteRoutes] Failed to load ${remoteName}/${moduleName}:`, error);
     return undefined;
@@ -37,28 +37,28 @@ export const RemoteRoutes = ({
   remoteName: string;
 }) => {
   const [ready, setReady] = useState(false);
-  const [routes, setRoutes] = useState<any[]>([]);
+  const [routes, setRoutes] = useState<RouteObject[]>([]);
   const [errorLoading, setErrorLoading] = useState(false);
 
   // Cache routes to avoid re-loading the same module multiple times
-  const [routeCache] = useState<Map<string, any>>(new Map());
+  const [routeCache] = useState<Map<string, unknown>>(new Map());
 
   /**
    * Retrieves routes from cache or loads them from the remote module
    */
-  const getRoutesFromRemote = async (
-    remoteName: string,
-    moduleName: string,
-  ) => {
-    const cacheKey = `${remoteName}/${moduleName}`;
+  const getRoutesFromRemote = useCallback(
+    async (remoteNameArg: string, moduleNameArg: string) => {
+      const cacheKey = `${remoteNameArg}/${moduleNameArg}`;
 
-    if (!routeCache.has(cacheKey)) {
-      const loadedModule = await loadRemoteModule(remoteName, moduleName);
-      routeCache.set(cacheKey, loadedModule);
-    }
+      if (!routeCache.has(cacheKey)) {
+        const loadedModule = await loadRemoteModule(remoteNameArg, moduleNameArg);
+        routeCache.set(cacheKey, loadedModule);
+      }
 
-    return routeCache.get(cacheKey);
-  };
+      return routeCache.get(cacheKey);
+    },
+    [routeCache],
+  );
 
   useEffect(() => {
     const initializeRoutes = async () => {
@@ -67,11 +67,11 @@ export const RemoteRoutes = ({
         console.log(`[RemoteRoutes] Loaded routes from ${remoteName}:`, loadedRoutes);
 
         // Extract routes based on dataKey if provided, otherwise use the entire module
-        const extractedRoutes =
-          (dataKey ? loadedRoutes?.[dataKey] : loadedRoutes) || [];
+        const routeModule = loadedRoutes as Record<string, RouteObject[]> | RouteObject[];
+        const extractedRoutes = (dataKey ? (routeModule as Record<string, RouteObject[]>)?.[dataKey] : routeModule) || [];
 
         console.log(`[RemoteRoutes] Extracted routes with dataKey="${dataKey}":`, extractedRoutes);
-        setRoutes(extractedRoutes);
+        setRoutes(extractedRoutes as RouteObject[]);
 
         // Add minimum delay to show skeleton for smoother UX
         await new Promise((resolve) => setTimeout(resolve, 500));
@@ -83,19 +83,14 @@ export const RemoteRoutes = ({
     };
 
     initializeRoutes();
-  }, [remoteName, moduleName, dataKey]);
+  }, [remoteName, moduleName, dataKey, getRoutesFromRemote]);
 
   // Generate routing based on loaded routes
   const routing = useRoutes(routes);
 
   // Error state
   if (errorLoading) {
-    return (
-      <div>
-        Failed to load remote module. Please check if the microfrontend is
-        running.
-      </div>
-    );
+    return <div>Failed to load remote module. Please check if the microfrontend is running.</div>;
   }
 
   // Loading state

@@ -10,17 +10,11 @@ export type Route = {
   element: ReactNode;
 };
 
-export const routes: Route[] = [
-
-];
+export const routes: Route[] = [];
 
 if (isCloud) {
   routes.push({
     path: '/*',
-    element: <RemoteRoutes
-        remoteName="VrittiAuth"
-        moduleName="routes"
-        dataKey="authRoutes"
-      />,
+    element: <RemoteRoutes remoteName="VrittiAuth" moduleName="routes" dataKey="authRoutes" />,
   });
 }

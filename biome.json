@@ -1,5 +1,5 @@
 {
-  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.3/schema.json",
   "assist": {
     "actions": {
       "source": {
@@ -13,16 +13,23 @@
     "useIgnoreFile": true
   },
   "formatter": {
-    "indentStyle": "space"
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 120
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "single"
+      "quoteStyle": "single",
+      "trailingCommas": "all"
     }
   },
   "css": {
     "parser": {
       "cssModules": true
+    },
+    "linter": {
+      "enabled": false
     }
   },
   "linter": {
