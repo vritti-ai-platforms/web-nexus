@@ -18,7 +18,7 @@ export default defineConfig({
     port: 3012,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: process.env.REACT_API_HOST || 'http://localhost:3000',
         changeOrigin: true,
         pathRewrite: (path) => path.replace(/^\/api/, ''),
       },
