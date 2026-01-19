@@ -1,10 +1,15 @@
 import { registerRemotes } from '@module-federation/enhanced/runtime';
+import { configureQuantumUI } from '@vritti/quantum-ui';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-
+import quantumUIConfig from '../quantum-ui.config';
 import App from './App';
 import { ALL_REMOTES } from './config/remotes.config';
+
+import './index.css';
+
+// Configure quantum-ui BEFORE rendering to ensure proper session recovery
+configureQuantumUI(quantumUIConfig);
 
 /**
  * Register all remote micro-frontends at startup

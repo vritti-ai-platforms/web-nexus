@@ -6,8 +6,8 @@
   "scripts": {
     "build": "rsbuild build",
     "check": "biome check --write .",
-    "dev": "rsbuild dev --open",
-    "dev:cloud": "rsbuild dev --open --host cloud.localhost",
+    "dev": "rsbuild dev --host local.vrittiai.com",
+    "dev:cloud": "rsbuild dev --host cloud.local.vrittiai.com",
     "format": "biome format --write .",
     "lint": "biome lint .",
     "preview": "rsbuild preview"
@@ -16,7 +16,7 @@
     "@module-federation/enhanced": "^0.21.0",
     "@module-federation/rsbuild-plugin": "^0.21.0",
     "@tanstack/react-query": "^5.90.16",
-    "@vritti/quantum-ui": "0.2.1",
+    "@vritti/quantum-ui": "0.2.2",
     "axios": "^1.12.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
