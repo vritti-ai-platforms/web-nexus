@@ -18,10 +18,13 @@ export interface RemoteConfig {
  */
 export const ALL_REMOTES: RemoteConfig[] = [
   {
-    name: 'VrittiAuth',
-    entry: import.meta.env.VITE_VRITTI_AUTH_URL || 'https://localhost:3001/mf-manifest.json',
-    exposedModule: 'routes',
-    baseUrl: import.meta.env.VITE_VRITTI_AUTH_BASE_URL || 'https://localhost:3001',
+    name: "VrittiAuth",
+    entry:
+      import.meta.env.VITE_VRITTI_AUTH_URL ||
+      "http://localhost:3001/mf-manifest.json",
+    exposedModule: "routes",
+    baseUrl:
+      import.meta.env.VITE_VRITTI_AUTH_BASE_URL || "http://localhost:3001",
   },
   // Add more remotes as needed:
   // {
