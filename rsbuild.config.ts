@@ -1,6 +1,9 @@
+import fs from 'node:fs';
 import { pluginModuleFederation } from '@module-federation/rsbuild-plugin';
 import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
+
+const useHttps = process.env.USE_HTTPS === 'true';
 
 export default defineConfig({
   html: {
@@ -16,11 +19,17 @@ export default defineConfig({
   },
   server: {
     port: 3012,
+    ...(useHttps && {
+      https: {
+        key: fs.readFileSync('./certs/local.vrittiai.com+4-key.pem'),
+        cert: fs.readFileSync('./certs/local.vrittiai.com+4.pem'),
+      },
+    }),
     proxy: {
       '/api': {
         target: process.env.REACT_API_HOST || 'http://localhost:3000',
         changeOrigin: true,
-        pathRewrite: (path) => path.replace(/^\/api/, ''),
+        pathRewrite: (reqPath) => reqPath.replace(/^\/api/, ''),
       },
     },
   },

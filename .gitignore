@@ -17,3 +17,6 @@ yalc.lock
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# SSL Certificates
+certs/
