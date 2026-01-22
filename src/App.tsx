@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from '@vritti/quantum-ui/Sonner';
 import { BrowserRouter, useRoutes } from 'react-router-dom';
 import { routes } from './routes';
 
@@ -22,6 +23,7 @@ const App = () => {
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
+      <Toaster position="bottom-right" />
     </QueryClientProvider>
   );
 };
