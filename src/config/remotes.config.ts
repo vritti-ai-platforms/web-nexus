@@ -9,7 +9,6 @@ export interface RemoteConfig {
   name: string;
   entry: string;
   exposedModule: string;
-  baseUrl?: string; // Base URL for loading remote assets like CSS
 }
 
 /**
@@ -19,14 +18,13 @@ export interface RemoteConfig {
 export const ALL_REMOTES: RemoteConfig[] = [
   {
     name: 'VrittiAuth',
-    entry: import.meta.env.VITE_VRITTI_AUTH_URL || 'http://local.vrittiai.com:3001/mf-manifest.json',
+    entry: process.env.PUBLIC_VRITTI_AUTH_ENTRY || 'http://local.vrittiai.com:3001/mf-manifest.json',
     exposedModule: 'routes',
-    baseUrl: import.meta.env.VITE_VRITTI_AUTH_BASE_URL || 'http://local.vrittiai.com:3001',
   },
   // Add more remotes as needed:
   // {
   //   name: 'VrittiCloud',
-  //   entry: import.meta.env.VITE_VRITTI_CLOUD_URL || 'http://localhost:3002/mf-manifest.json',
+  //   entry: process.env.PUBLIC_VRITTI_CLOUD_ENTRY || 'http://localhost:3002/mf-manifest.json',
   //   exposedModule: 'routes',
   // },
 ];
