@@ -9,10 +9,10 @@ on:
 jobs:
   build:
     name: Build Web Container
-    uses: vritti-ai-platforms/infrastructure/.github/workflows/build-web.yml@main
+    uses: vritti-ai-platforms/infrastructure/.github/workflows/reusable-build-web.yml@main
     with:
       app_type: container
-      app_name: vritti-web-nexus
+      app_name: web-nexus
       deploy_path: /
       node_version: '20'
       build_command: pnpm build
@@ -24,7 +24,7 @@ jobs:
   deploy:
     name: Deploy to Production
     needs: build
-    uses: vritti-ai-platforms/infrastructure/.github/workflows/deploy-web-build.yml@main
+    uses: vritti-ai-platforms/infrastructure/.github/workflows/reusable-deploy-web-build.yml@main
     with:
       artifact_name: ${{ needs.build.outputs.artifact_name }}
       deploy_path: /opt/vritti/www
