@@ -35,7 +35,7 @@ const getOrigin = (): string => {
 export const ALL_REMOTES: RemoteConfig[] = [
   {
     name: 'VrittiAuth',
-    entry: `${getOrigin()}/vritti-auth/mf-manifest.json`,
+    entry: `${getOrigin()}/auth-microfrontend/mf-manifest.json`,
     exposedModule: 'routes',
   },
   // Add more remotes as needed:
