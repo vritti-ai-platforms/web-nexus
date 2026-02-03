@@ -12,7 +12,6 @@ import { MicrofrontendSkeletonFullPage } from './MircrofrontendFullPageSkeleton'
 const loadRemoteModule = async (remoteName: string, moduleName: string) => {
   try {
     const module = await loadRemote(`${remoteName}/${moduleName}`);
-    console.log(`[RemoteRoutes] Loaded module ${remoteName}/${moduleName}:`, module);
     return (module as { default?: unknown })?.default || module;
   } catch (error) {
     console.error(`[RemoteRoutes] Failed to load ${remoteName}/${moduleName}:`, error);
@@ -64,13 +63,11 @@ export const RemoteRoutes = ({
     const initializeRoutes = async () => {
       try {
         const loadedRoutes = await getRoutesFromRemote(remoteName, moduleName);
-        console.log(`[RemoteRoutes] Loaded routes from ${remoteName}:`, loadedRoutes);
 
         // Extract routes based on dataKey if provided, otherwise use the entire module
         const routeModule = loadedRoutes as Record<string, RouteObject[]> | RouteObject[];
         const extractedRoutes = (dataKey ? (routeModule as Record<string, RouteObject[]>)?.[dataKey] : routeModule) || [];
 
-        console.log(`[RemoteRoutes] Extracted routes with dataKey="${dataKey}":`, extractedRoutes);
         setRoutes(extractedRoutes as RouteObject[]);
 
         // Add minimum delay to show skeleton for smoother UX
@@ -97,10 +94,6 @@ export const RemoteRoutes = ({
   if (!ready) {
     return <MicrofrontendSkeletonFullPage />;
   }
-
-  // Debug: Log what useRoutes returned
-  console.log(`[RemoteRoutes] useRoutes returned:`, routing);
-  console.log(`[RemoteRoutes] Routes being used:`, routes);
 
   // Render the loaded routes
   return <Suspense fallback={<MicrofrontendSkeletonFullPage />}>{routing}</Suspense>;
