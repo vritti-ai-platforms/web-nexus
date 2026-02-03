@@ -33,7 +33,7 @@ interface EnvironmentConfig {
 const getEnvVar = (key: string): string | undefined => {
   // Static mapping required because import.meta.env uses build-time replacement
   const envMap: Record<string, string | undefined> = {
-    PUBLIC_VRITTI_AUTH_PORT: import.meta.env.PUBLIC_VRITTI_AUTH_PORT,
+    PUBLIC_AUTH_MF_PORT: import.meta.env.PUBLIC_AUTH_MF_PORT,
     PUBLIC_VRITTI_CLOUD_PORT: import.meta.env.PUBLIC_VRITTI_CLOUD_PORT,
     PUBLIC_MF_BASE_URL: import.meta.env.PUBLIC_MF_BASE_URL,
   };
@@ -74,7 +74,7 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
  * @returns Dynamically constructed manifest URL
  */
 const buildRemoteEntry = (config: {
-  portEnvVar: string; // Environment variable name (e.g., 'PUBLIC_VRITTI_AUTH_PORT')
+  portEnvVar: string; // Environment variable name (e.g., 'PUBLIC_AUTH_MF_PORT')
   prodPath: string;
 }): string => {
   const { protocol, host } = getEnvironmentConfig();
@@ -101,27 +101,27 @@ const buildRemoteEntry = (config: {
  *
  * Each remote uses buildRemoteEntry() to automatically detect:
  * - Protocol (HTTP/HTTPS) from current page
- * - Local mode: Uses environment variable port (e.g., PUBLIC_VRITTI_AUTH_PORT=3001)
+ * - Local mode: Uses environment variable port (e.g., PUBLIC_AUTH_MF_PORT=3001)
  * - Production mode: Uses PUBLIC_MF_BASE_URL + prodPath
  *
- * Local example (with PUBLIC_VRITTI_AUTH_PORT=3001):
+ * Local example (with PUBLIC_AUTH_MF_PORT=3001):
  *   https://local.vrittiai.com:3001/mf-manifest.json
  *
  * Production example (with PUBLIC_MF_BASE_URL=https://mf.vrittiai.com):
  *   https://mf.vrittiai.com/auth-microfrontend/mf-manifest.json
  *
  * To run in local mode, set environment variables in .env:
- *   PUBLIC_VRITTI_AUTH_PORT=3001
+ *   PUBLIC_AUTH_MF_PORT=3001
  *
  * To run in production mode, set in .env:
  *   PUBLIC_MF_BASE_URL=https://mf.vrittiai.com
- *   (and remove or comment out PUBLIC_VRITTI_AUTH_PORT)
+ *   (and remove or comment out PUBLIC_AUTH_MF_PORT)
  */
 export const ALL_REMOTES: RemoteConfig[] = [
   {
     name: 'VrittiAuth',
     entry: buildRemoteEntry({
-      portEnvVar: 'PUBLIC_VRITTI_AUTH_PORT',
+      portEnvVar: 'PUBLIC_AUTH_MF_PORT',
       prodPath: 'auth-microfrontend',
     }),
     exposedModule: 'routes',

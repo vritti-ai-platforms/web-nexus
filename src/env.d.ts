@@ -8,7 +8,7 @@
  */
 interface ImportMetaEnv {
   // Module Federation remote ports (local development)
-  readonly PUBLIC_VRITTI_AUTH_PORT?: string;
+  readonly PUBLIC_AUTH_MF_PORT?: string;
   readonly PUBLIC_VRITTI_CLOUD_PORT?: string;
 
   // Module Federation base URL (production)

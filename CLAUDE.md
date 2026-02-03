@@ -84,7 +84,7 @@ Environment variables are exposed via `import.meta.env` (NOT `process.env` which
 - Use type-safe access pattern with `getEnvVar()` helper for dynamic key access
 
 Available environment variables:
-- `PUBLIC_VRITTI_AUTH_PORT` - Auth microfrontend port (local dev, e.g., '3001')
+- `PUBLIC_AUTH_MF_PORT` - Auth microfrontend port (local dev, e.g., '3001')
 - `PUBLIC_VRITTI_CLOUD_PORT` - Cloud microfrontend port (local dev, e.g., '3002')
 - `PUBLIC_MF_BASE_URL` - Module Federation base URL (production, e.g., 'https://mf.vrittiai.com')
 
@@ -92,7 +92,7 @@ Available environment variables:
 ```typescript
 interface ImportMetaEnv {
   // Module Federation remote ports (local development)
-  readonly PUBLIC_VRITTI_AUTH_PORT?: string;
+  readonly PUBLIC_AUTH_MF_PORT?: string;
   readonly PUBLIC_VRITTI_CLOUD_PORT?: string;
 
   // Module Federation base URL (production)
@@ -112,7 +112,7 @@ const getEnvVar = (key: string): string | undefined => {
 };
 
 // Usage
-const remotePort = getEnvVar('PUBLIC_VRITTI_AUTH_PORT');
+const remotePort = getEnvVar('PUBLIC_AUTH_MF_PORT');
 ```
 
 ### 5. Module Federation Configuration
@@ -161,7 +161,7 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
 **Building remote URLs** (`src/config/remotes.config.ts`):
 ```typescript
 const buildRemoteEntry = (config: {
-  portEnvVar: string;    // e.g., 'PUBLIC_VRITTI_AUTH_PORT'
+  portEnvVar: string;    // e.g., 'PUBLIC_AUTH_MF_PORT'
   prodPath: string;      // e.g., 'auth-microfrontend'
 }): string => {
   const { protocol, host } = getEnvironmentConfig();
@@ -186,7 +186,7 @@ export const ALL_REMOTES: RemoteConfig[] = [
   {
     name: 'VrittiAuth',
     entry: buildRemoteEntry({
-      portEnvVar: 'PUBLIC_VRITTI_AUTH_PORT',
+      portEnvVar: 'PUBLIC_AUTH_MF_PORT',
       prodPath: 'auth-microfrontend',
     }),
     exposedModule: 'routes',
@@ -244,7 +244,7 @@ export const MyIcon: React.FC<{ className?: string }> = ({ className }) => (
 ## Starting the Application
 
 **Prerequisites**:
-- `vritti-auth` must be running on port 3001 (or the port specified in `PUBLIC_VRITTI_AUTH_PORT`)
+- `vritti-auth` must be running on port 3001 (or the port specified in `PUBLIC_AUTH_MF_PORT`)
 - If using HTTPS mode, SSL certificates must be in `./certs/` directory
 
 **Available npm scripts**:
