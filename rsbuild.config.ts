@@ -38,6 +38,7 @@ export default defineConfig({
       '/api': {
         target: process.env.REACT_API_HOST || defaultApiHost,
         changeOrigin: true,
+        secure: false, // Allow self-signed certificates in local development
         pathRewrite: (reqPath) => reqPath.replace(/^\/api/, ''),
       },
     },
