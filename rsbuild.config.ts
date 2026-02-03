@@ -4,6 +4,8 @@ import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 
 const useHttps = process.env.USE_HTTPS === 'true';
+const protocol = useHttps ? 'https' : 'http';
+const defaultApiHost = `${protocol}://local.vrittiai.com:3000`;
 
 export default defineConfig({
   html: {
@@ -27,7 +29,7 @@ export default defineConfig({
     }),
     proxy: {
       '/api': {
-        target: process.env.REACT_API_HOST || 'http://localhost:3000',
+        target: process.env.REACT_API_HOST || defaultApiHost,
         changeOrigin: true,
         pathRewrite: (reqPath) => reqPath.replace(/^\/api/, ''),
       },

@@ -4,10 +4,11 @@
  * This file defines all remote micro-frontends that will be loaded
  * by the host application. All remotes are loaded unconditionally at startup.
  *
- * ZERO ENVIRONMENT VARIABLES APPROACH:
- * - Uses window.location.origin to construct manifest URLs dynamically
- * - Same build works in any environment (dev, staging, production)
- * - Micro-frontends are served from subdirectories on the same domain
+ * ENVIRONMENT-DRIVEN APPROACH:
+ * - Automatically detects protocol (HTTP/HTTPS) from window.location.protocol
+ * - Uses PUBLIC_ prefixed environment variables (Rsbuild convention)
+ * - Local mode: PORT env vars defined → port-based routing
+ * - Production mode: PORT env vars undefined → path-based routing with PUBLIC_MF_BASE_URL
  */
 
 export interface RemoteConfig {
@@ -16,32 +17,116 @@ export interface RemoteConfig {
   exposedModule: string;
 }
 
+interface EnvironmentConfig {
+  isLocal: boolean;
+  protocol: string;
+  host: string;
+  port: string;
+}
+
 /**
- * Get the current origin for constructing manifest URLs
- * Falls back to local development URL if window is not available (SSR)
+ * Safely access environment variables by key name
+ * Rsbuild's import.meta.env doesn't support dynamic key access by default
+ * @param key - The environment variable key to access
+ * @returns The environment variable value or undefined
  */
-const getOrigin = (): string => {
-  if (typeof window !== 'undefined') {
-    return window.location.origin;
+const getEnvVar = (key: string): string | undefined => {
+  return (import.meta.env as Record<string, string | undefined>)[key];
+};
+
+/**
+ * Detects the current environment and protocol configuration
+ * @returns Environment configuration object with protocol, host, and environment detection
+ */
+const getEnvironmentConfig = (): EnvironmentConfig => {
+  // SSR/build time fallback
+  if (typeof window === 'undefined') {
+    return {
+      isLocal: true,
+      protocol: 'http',
+      host: 'local.vrittiai.com',
+      port: '3012',
+    };
   }
-  // Fallback for local development (SSR/build time)
-  return 'http://local.vrittiai.com:3001';
+
+  const { protocol, hostname, port } = window.location;
+
+  // Detect local environment by hostname pattern
+  const isLocal = hostname.includes('local.vrittiai.com');
+
+  return {
+    isLocal,
+    protocol: protocol.replace(':', ''), // 'http' or 'https'
+    host: hostname,
+    port: port || (protocol === 'https:' ? '443' : '80'),
+  };
+};
+
+/**
+ * Builds the remote entry URL based on environment variables and configuration
+ * @param config - Configuration object with port env var name and production path
+ * @returns Dynamically constructed manifest URL
+ */
+const buildRemoteEntry = (config: {
+  portEnvVar: string; // Environment variable name (e.g., 'PUBLIC_VRITTI_AUTH_PORT')
+  prodPath: string;
+}): string => {
+  const { protocol, host } = getEnvironmentConfig();
+
+  // Check if the port environment variable is defined
+  // Rsbuild exposes PUBLIC_ prefixed env vars via import.meta.env
+  const remotePort = getEnvVar(config.portEnvVar);
+
+  if (remotePort) {
+    // Local: port-based routing with environment variable port
+    // Example: http://local.vrittiai.com:3001/mf-manifest.json
+    return `${protocol}://${host}:${remotePort}/mf-manifest.json`;
+  } else {
+    // Production: path-based routing with MF_BASE_URL
+    // Example: https://mf.vrittiai.com/auth-microfrontend/mf-manifest.json
+    const mfBaseUrl = import.meta.env.PUBLIC_MF_BASE_URL || `${protocol}://${host}`;
+    return `${mfBaseUrl}/${config.prodPath}/mf-manifest.json`;
+  }
 };
 
 /**
  * Registry of all remote micro-frontends
  * Add new remotes here as they are developed
+ *
+ * Each remote uses buildRemoteEntry() to automatically detect:
+ * - Protocol (HTTP/HTTPS) from current page
+ * - Local mode: Uses environment variable port (e.g., PUBLIC_VRITTI_AUTH_PORT=3001)
+ * - Production mode: Uses PUBLIC_MF_BASE_URL + prodPath
+ *
+ * Local example (with PUBLIC_VRITTI_AUTH_PORT=3001):
+ *   https://local.vrittiai.com:3001/mf-manifest.json
+ *
+ * Production example (with PUBLIC_MF_BASE_URL=https://mf.vrittiai.com):
+ *   https://mf.vrittiai.com/auth-microfrontend/mf-manifest.json
+ *
+ * To run in local mode, set environment variables in .env:
+ *   PUBLIC_VRITTI_AUTH_PORT=3001
+ *
+ * To run in production mode, set in .env:
+ *   PUBLIC_MF_BASE_URL=https://mf.vrittiai.com
+ *   (and remove or comment out PUBLIC_VRITTI_AUTH_PORT)
  */
 export const ALL_REMOTES: RemoteConfig[] = [
   {
     name: 'VrittiAuth',
-    entry: `${getOrigin()}/auth-microfrontend/mf-manifest.json`,
+    entry: buildRemoteEntry({
+      portEnvVar: 'PUBLIC_VRITTI_AUTH_PORT',
+      prodPath: 'auth-microfrontend',
+    }),
     exposedModule: 'routes',
   },
-  // Add more remotes as needed:
+  // Add more remotes following the same pattern:
   // {
   //   name: 'VrittiCloud',
-  //   entry: `${getOrigin()}/vritti-cloud/mf-manifest.json`,
+  //   entry: buildRemoteEntry('VrittiCloud', {
+  //     portEnvVar: 'PUBLIC_VRITTI_CLOUD_PORT',
+  //     prodPath: 'cloud-microfrontend',
+  //   }),
   //   exposedModule: 'routes',
   // },
 ];
