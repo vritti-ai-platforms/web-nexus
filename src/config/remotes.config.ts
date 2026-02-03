@@ -25,13 +25,19 @@ interface EnvironmentConfig {
 }
 
 /**
- * Safely access environment variables by key name
- * Rsbuild's import.meta.env doesn't support dynamic key access by default
+ * Get environment variable value by key name
+ * Since Rsbuild uses static replacement at build time, we need a static mapping
  * @param key - The environment variable key to access
  * @returns The environment variable value or undefined
  */
 const getEnvVar = (key: string): string | undefined => {
-  return (import.meta.env as Record<string, string | undefined>)[key];
+  // Static mapping required because import.meta.env uses build-time replacement
+  const envMap: Record<string, string | undefined> = {
+    PUBLIC_VRITTI_AUTH_PORT: import.meta.env.PUBLIC_VRITTI_AUTH_PORT,
+    PUBLIC_VRITTI_CLOUD_PORT: import.meta.env.PUBLIC_VRITTI_CLOUD_PORT,
+    PUBLIC_MF_BASE_URL: import.meta.env.PUBLIC_MF_BASE_URL,
+  };
+  return envMap[key];
 };
 
 /**

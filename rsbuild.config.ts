@@ -1,13 +1,20 @@
 import fs from 'node:fs';
 import { pluginModuleFederation } from '@module-federation/rsbuild-plugin';
-import { defineConfig } from '@rsbuild/core';
+import { defineConfig, loadEnv } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
+
+// Load environment variables from .env files
+// By default, loadEnv looks for PUBLIC_ prefixed variables
+const { publicVars } = loadEnv();
 
 const useHttps = process.env.USE_HTTPS === 'true';
 const protocol = useHttps ? 'https' : 'http';
 const defaultApiHost = `${protocol}://local.vrittiai.com:3000`;
 
 export default defineConfig({
+  source: {
+    define: publicVars, // Inject PUBLIC_ prefixed env vars
+  },
   html: {
     tags: [
       {
