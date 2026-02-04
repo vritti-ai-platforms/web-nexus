@@ -34,7 +34,7 @@ const getEnvVar = (key: string): string | undefined => {
   // Static mapping required because import.meta.env uses build-time replacement
   const envMap: Record<string, string | undefined> = {
     PUBLIC_AUTH_MF_PORT: import.meta.env.PUBLIC_AUTH_MF_PORT,
-    PUBLIC_VRITTI_CLOUD_PORT: import.meta.env.PUBLIC_VRITTI_CLOUD_PORT,
+    PUBLIC_CLOUD_MF_PORT: import.meta.env.PUBLIC_CLOUD_MF_PORT,
     PUBLIC_MF_BASE_URL: import.meta.env.PUBLIC_MF_BASE_URL,
   };
   return envMap[key];
@@ -126,13 +126,12 @@ export const ALL_REMOTES: RemoteConfig[] = [
     }),
     exposedModule: 'routes',
   },
-  // Add more remotes following the same pattern:
-  // {
-  //   name: 'VrittiCloud',
-  //   entry: buildRemoteEntry('VrittiCloud', {
-  //     portEnvVar: 'PUBLIC_VRITTI_CLOUD_PORT',
-  //     prodPath: 'cloud-microfrontend',
-  //   }),
-  //   exposedModule: 'routes',
-  // },
+  {
+    name: 'VrittiCloud',
+    entry: buildRemoteEntry({
+      portEnvVar: 'PUBLIC_CLOUD_MF_PORT',
+      prodPath: 'cloud-microfrontend',
+    }),
+    exposedModule: 'routes',
+  },
 ];

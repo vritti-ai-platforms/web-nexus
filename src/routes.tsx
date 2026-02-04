@@ -1,3 +1,4 @@
+import { getToken } from '@vritti/quantum-ui';
 import type { ReactNode } from 'react';
 import { RemoteRoutes } from './utils/RemoteRoutes';
 
