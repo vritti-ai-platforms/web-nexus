@@ -1,17 +1,28 @@
-import { getToken } from '@vritti/quantum-ui';
-import type { ReactNode } from 'react';
+import type { RouteObject } from 'react-router-dom';
 import { RemoteRoutes } from './utils/RemoteRoutes';
+import { AppLayout } from './components/layouts/AppLayout';
+import { DemoPage } from './pages/DemoPage';
 
 const subDomain = window.location.hostname.split('.')[0];
 
 export const isCloud = subDomain === 'cloud';
 
-export type Route = {
-  path: string;
-  element: ReactNode;
-};
-
-export const routes: Route[] = [];
+export const routes: RouteObject[] = [
+  {
+    path: '/',
+    element: <AppLayout />,
+    children: [
+      {
+        index: true,
+        element: <DemoPage />,
+      },
+      {
+        path: 'demo',
+        element: <DemoPage />,
+      },
+    ],
+  },
+];
 
 if (isCloud) {
   routes.push({
