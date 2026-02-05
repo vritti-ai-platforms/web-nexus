@@ -67,6 +67,10 @@ export default defineConfig({
           singleton: true,
           eager: true,
         },
+        '@vritti/quantum-ui/theme': {
+          singleton: true,
+          eager: true,
+        },
         axios: {
           singleton: true,
           eager: true,

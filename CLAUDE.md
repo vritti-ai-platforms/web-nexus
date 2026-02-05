@@ -261,6 +261,201 @@ export const ALL_REMOTES: RemoteConfig[] = [
 - Use quantum-ui Form components (`Form`, `Field`, `FieldGroup`, etc.)
 - Mutations should use TanStack Query hooks
 
+### 7. Services and Hooks Pattern
+
+**CRITICAL: Follow established patterns for API calls and React Query integration.**
+
+This project uses a clear separation between services (API calls) and hooks (React Query wrappers).
+
+#### Services (`src/services/`)
+
+Services contain pure API call functions using axios from `@vritti/quantum-ui/axios`:
+
+```typescript
+// src/services/user.service.ts
+import axios, { type AxiosResponse } from '@vritti/quantum-ui/axios';
+
+/**
+ * User data response from the /auth/me endpoint
+ */
+export interface User {
+  userId: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  emailVerified: boolean;
+  phoneVerified: boolean;
+  accountStatus: 'active' | 'suspended' | 'pending';
+  roles: string[];
+  permissions: string[];
+}
+
+/**
+ * Fetches the currently authenticated user's data
+ */
+export async function getCurrentUser(): Promise<User> {
+  const response: AxiosResponse<User> = await axios.get('cloud-api/auth/me');
+  return response.data;
+}
+
+/**
+ * Logs out the current user from the current device
+ */
+export async function logout(): Promise<void> {
+  await axios.post('cloud-api/auth/logout', {}, {
+    successMessage: 'Logged out successfully',
+  });
+}
+```
+
+**Centralized exports** (`src/services/index.ts`):
+```typescript
+// User services
+export type { User } from './user.service';
+export { getCurrentUser, logout, logoutAll } from './user.service';
+```
+
+**Service Best Practices**:
+- ✅ One service file per domain (user.service.ts, auth.service.ts)
+- ✅ Comprehensive JSDoc with examples
+- ✅ Type-safe with interfaces for DTOs and responses
+- ✅ Use `type` keyword for type-only imports
+- ✅ Export types and functions from index.ts
+- ✅ Use axios config options (successMessage, loadingMessage, public)
+- ❌ Don't include React Query logic in services
+- ❌ Don't handle component state in services
+
+#### Hooks (`src/hooks/`)
+
+Hooks wrap services with TanStack Query for React integration:
+
+**Pattern 1: Query Hook** (for data fetching):
+```typescript
+// src/hooks/useUser.ts
+import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
+import { getToken } from '@vritti/quantum-ui/axios';
+import { getCurrentUser, type User } from '../services';
+
+type UseUserOptions = Omit<
+  UseQueryOptions<User, Error>,
+  'queryKey' | 'queryFn' | 'enabled'
+>;
+
+export const useUser = (options?: UseUserOptions) => {
+  const isAuthenticated = !!getToken();
+
+  return useQuery<User, Error>({
+    queryKey: ['auth', 'user'],
+    queryFn: getCurrentUser,
+    enabled: isAuthenticated, // Only fetch if authenticated
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: false,
+    ...options,
+  });
+};
+```
+
+**Pattern 2: Mutation Hook** (for actions):
+```typescript
+import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
+import { logout } from '../services';
+
+type UseLogoutOptions = Omit<
+  UseMutationOptions<void, Error, void>,
+  'mutationFn'
+>;
+
+export const useLogout = (options?: UseLogoutOptions) => {
+  return useMutation<void, Error, void>({
+    mutationFn: logout,
+    ...options,
+  });
+};
+```
+
+**Pattern 3: Mutation with Parameters**:
+```typescript
+interface VerifyEmailParams {
+  otp: string;
+}
+
+type UseVerifyEmailOptions = Omit<
+  UseMutationOptions<void, Error, VerifyEmailParams>,
+  'mutationFn'
+>;
+
+export const useVerifyEmail = (options?: UseVerifyEmailOptions) => {
+  return useMutation<void, Error, VerifyEmailParams>({
+    mutationFn: ({ otp }) => verifyEmail(otp),
+    ...options,
+  });
+};
+
+// Usage
+const verifyMutation = useVerifyEmail({
+  onSuccess: () => console.log('Verified!'),
+});
+verifyMutation.mutate({ otp: '123456' });
+```
+
+**Centralized exports** (`src/hooks/index.ts`):
+```typescript
+// User hooks
+export { useUser, useLogout, useLogoutAll } from './useUser';
+```
+
+**Hook Best Practices**:
+- ✅ Use `useQuery` for data fetching
+- ✅ Use `useMutation` for actions (POST, PUT, DELETE)
+- ✅ Use `type` keyword for type-only imports
+- ✅ Use `Omit<UseMutationOptions, 'mutationFn'>` for type-safe options
+- ✅ Include comprehensive JSDoc with examples
+- ✅ Export hooks from index.ts using relative imports
+- ✅ Allow consumers to pass onSuccess, onError callbacks via options
+- ❌ Don't include business logic in hooks (put it in services)
+- ❌ Don't hardcode queryKey strings (use descriptive arrays)
+- ❌ Don't use path aliases like '@/' - use relative imports instead
+
+**Query Key Patterns**:
+```typescript
+// Hierarchical structure
+['auth', 'user']              // User profile
+['auth', 'user', userId]      // Specific user
+['onboarding', 'status']      // Onboarding status
+['mobile-verification', 'status']  // Mobile verification
+```
+
+**Usage in Components**:
+```typescript
+import { useUser, useLogout } from '../hooks';
+import { clearToken } from '@vritti/quantum-ui/axios';
+
+function UserMenu() {
+  const { data: user, isLoading } = useUser();
+  const logoutMutation = useLogout({
+    onSuccess: () => {
+      clearToken();
+      window.location.href = '/auth/login';
+    },
+  });
+
+  if (isLoading) return <Skeleton />;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        {user?.firstName} {user?.lastName}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
+          Sign out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+```
+
 ## Common Patterns
 
 ### Icon Colors in Light/Dark Mode

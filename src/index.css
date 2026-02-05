@@ -26,5 +26,5 @@
  * Scans app source files and quantum-ui components to generate utilities
  * Note: Color variables come from @import, utilities come from @source scanning
  */
-@source '../src/**/*.{js,ts,jsx,tsx}';
-@source '../node_modules/@vritti/quantum-ui/dist/**/*.js';
+@source "../src/**/*.{js,ts,jsx,tsx}";
+@source "../node_modules/@vritti/quantum-ui/dist/**/*.js";

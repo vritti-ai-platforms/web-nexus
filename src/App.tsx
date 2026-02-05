@@ -1,7 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from '@vritti/quantum-ui/theme';
 import { Toaster } from '@vritti/quantum-ui/Sonner';
-import { BrowserRouter, useRoutes } from 'react-router-dom';
-import { routes } from './routes';
+import { BrowserRouter } from 'react-router-dom';
+import { AppRender, AuthProvider } from './providers';
 
 // Create a single QueryClient instance to be shared across the app and microfrontends
 const queryClient = new QueryClient({
@@ -13,18 +14,18 @@ const queryClient = new QueryClient({
   },
 });
 
-const AppRoutes = () => {
-  return useRoutes(routes);
-};
-
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-      <Toaster position="bottom-right" />
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AuthProvider>
+            <AppRender />
+          </AuthProvider>
+        </BrowserRouter>
+        <Toaster position="bottom-right" />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 };
 
