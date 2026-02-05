@@ -54,7 +54,56 @@ For SVG icons that need dynamic fill colors, use CSS variables:
 <path style={{ fill: 'var(--color-foreground)' }} />
 ```
 
-### 2. Component Imports
+### 2. Spacing and Sizing Guidelines
+
+**CRITICAL: Only use standard Tailwind spacing classes. Never use pixel values or custom rem values.**
+
+This ensures:
+- **Accessibility**: Respects user's browser font size preferences
+- **Responsive design**: Scales properly across devices
+- **Consistency**: Follows design system spacing
+- **Maintainability**: Easier to adjust global spacing
+
+```typescript
+// WRONG - Pixel values
+<div className="pt-[66px] px-[30px] py-[10px]" />
+<div style={{ padding: '20px', margin: '16px' }} />
+
+// WRONG - Custom rem values in brackets
+<div className="pt-[4.125rem] px-[1.875rem]" />
+
+// CORRECT - Standard Tailwind spacing classes
+<div className="pt-16 px-8 py-2.5" />
+<div className="p-6 m-4" />
+```
+
+**Tailwind spacing scale reference:**
+- `0.5` = 0.125rem = 2px
+- `1` = 0.25rem = 4px
+- `2` = 0.5rem = 8px
+- `2.5` = 0.625rem = 10px
+- `4` = 1rem = 16px
+- `6` = 1.5rem = 24px
+- `8` = 2rem = 32px
+- `10` = 2.5rem = 40px
+- `12` = 3rem = 48px
+- `16` = 4rem = 64px
+- `20` = 5rem = 80px
+- `24` = 6rem = 96px
+
+**DO**:
+- ✅ Use standard Tailwind spacing classes (p-4, m-6, gap-8, pt-16)
+- ✅ Use percentage for widths/flex values (w-1/2, flex-1)
+- ✅ Use viewport units for full-screen layouts (h-screen, min-h-screen)
+- ✅ Choose the closest standard Tailwind class instead of custom values
+
+**DON'T**:
+- ❌ Use px units in className or style attributes
+- ❌ Use custom rem values in brackets like pt-[4.125rem]
+- ❌ Use absolute pixel measurements
+- ❌ Create arbitrary values when a standard class exists
+
+### 3. Component Imports
 
 Always import quantum-ui components from their specific paths:
 ```typescript

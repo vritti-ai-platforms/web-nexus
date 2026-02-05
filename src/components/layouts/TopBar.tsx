@@ -5,7 +5,7 @@ import logoImg from '../../assets/vritti-cloud.png';
 
 export const TopBar = () => {
 	return (
-		<div className="bg-background/60 backdrop-blur-sm border-b border-border">
+		<div className="fixed top-0 left-0 right-0 z-50 bg-background/60 backdrop-blur-sm border-b border-border">
 			<div className="h-14 px-6 flex items-center justify-between">
 				{/* Logo */}
 				<div className="flex items-center">

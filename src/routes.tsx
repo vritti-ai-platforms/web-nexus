@@ -1,7 +1,7 @@
 import type { RouteObject } from 'react-router-dom';
-import { RemoteRoutes } from './utils/RemoteRoutes';
 import { AppLayout } from './components/layouts/AppLayout';
 import { DemoPage } from './pages/DemoPage';
+import { RemoteRoutes } from './utils/RemoteRoutes';
 
 const subDomain = window.location.hostname.split('.')[0];
 
@@ -13,12 +13,12 @@ export const routes: RouteObject[] = [
     element: <AppLayout />,
     children: [
       {
-        index: true,
+        path: 'dashboard',
         element: <DemoPage />,
       },
       {
-        path: 'demo',
-        element: <DemoPage />,
+        path: 'account/*',
+        element: <RemoteRoutes remoteName="VrittiAuth" moduleName="routes" dataKey="accountRoutes" />,
       },
     ],
   },

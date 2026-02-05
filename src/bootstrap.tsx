@@ -1,5 +1,5 @@
 import { registerRemotes } from '@module-federation/enhanced/runtime';
-import { configureQuantumUI } from '@vritti/quantum-ui';
+import { configureQuantumUI, ThemeProvider } from '@vritti/quantum-ui';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import quantumUIConfig from '../quantum-ui.config';
@@ -27,7 +27,9 @@ if (rootEl) {
   const root = ReactDOM.createRoot(rootEl);
   root.render(
     <React.StrictMode>
-      <App />
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
     </React.StrictMode>,
   );
 }

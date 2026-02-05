@@ -66,7 +66,10 @@ export const RemoteRoutes = ({
 
         // Extract routes based on dataKey if provided, otherwise use the entire module
         const routeModule = loadedRoutes as Record<string, RouteObject[]> | RouteObject[];
-        const extractedRoutes = (dataKey ? (routeModule as Record<string, RouteObject[]>)?.[dataKey] : routeModule) || [];
+        const extractedRoutes =
+          (dataKey ? (routeModule as Record<string, RouteObject[]>)?.[dataKey] : routeModule) || [];
+
+        console.log('extractedRoutes', extractedRoutes, dataKey);
 
         setRoutes(extractedRoutes as RouteObject[]);
 
