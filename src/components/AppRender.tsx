@@ -23,13 +23,15 @@ import { MicrofrontendSkeletonFullPage } from '../utils/MircrofrontendFullPageSk
 export const AppRender: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
-  // Show loading screen while checking authentication
+  // Call ALL hooks before any conditional returns to satisfy React's hooks rules
+  // Hooks must be called in the same order on every render
+  const routes = isAuthenticated ? authenticatedRoutes : publicRoutes;
+  const routeElement = useRoutes(routes);
+
+  // Now safe to do conditional returns
   if (isLoading) {
     return <MicrofrontendSkeletonFullPage />;
   }
 
-  // Determine which routes to render based on auth state
-  const routes = isAuthenticated ? authenticatedRoutes : publicRoutes;
-
-  return useRoutes(routes);
+  return routeElement;
 };
