@@ -1,7 +1,6 @@
 import { type UseMutationOptions, type UseQueryOptions, useMutation, useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import { type AuthStatusResponse, getAuthStatus, logout, logoutAll } from '../services';
-import type { AxiosError } from 'axios';
 
 type UseAuthStatusOptions = Omit<UseQueryOptions<AuthStatusResponse, AxiosError>, 'queryKey' | 'queryFn'>;
 
