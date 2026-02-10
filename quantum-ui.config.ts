@@ -37,7 +37,7 @@ export default defineConfig({
     tokenHeaderName: 'Authorization',
     tokenPrefix: 'Bearer',
     tokenEndpoint: 'cloud-api/auth/access-token',
-    refreshEndpoint: 'cloud-api/auth/refresh',
+    refreshEndpoint: 'cloud-api/auth/refresh-tokens',
     sessionRecoveryEnabled: true,
   },
 });
