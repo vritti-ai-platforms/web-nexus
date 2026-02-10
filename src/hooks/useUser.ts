@@ -1,12 +1,12 @@
 import { type UseMutationOptions, type UseQueryOptions, useMutation, useQuery } from '@tanstack/react-query';
-import { type AuthStatusResponse, getCurrentUser, logout, logoutAll } from '../services';
+import { type AuthStatusResponse, getAuthStatus, logout, logoutAll } from '../services';
 
-type UseUserOptions = Omit<UseQueryOptions<AuthStatusResponse, Error>, 'queryKey' | 'queryFn'>;
+type UseAuthStatusOptions = Omit<UseQueryOptions<AuthStatusResponse, Error>, 'queryKey' | 'queryFn'>;
 
-export function useUser(options?: UseUserOptions) {
+export function useAuthStatus(options?: UseAuthStatusOptions) {
   return useQuery<AuthStatusResponse, Error>({
-    queryKey: ['auth', 'user'],
-    queryFn: getCurrentUser,
+    queryKey: ['auth', 'status'],
+    queryFn: getAuthStatus,
     staleTime: Infinity,
     retry: false,
     ...options,

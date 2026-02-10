@@ -30,9 +30,9 @@ export interface AuthStatusResponse {
 }
 
 // Fetches the current user's authentication status
-export function getCurrentUser(): Promise<AuthStatusResponse> {
+export function getAuthStatus(): Promise<AuthStatusResponse> {
   return axios
-    .get<AuthStatusResponse>('cloud-api/auth/me', { public: true })
+    .get<AuthStatusResponse>('cloud-api/auth/status', { public: true })
     .then((r) => r.data);
 }
 

@@ -1,3 +1,2 @@
-// User services
-export type { User, AuthStatusResponse } from './user.service';
-export { getCurrentUser, logout, logoutAll } from './user.service';
+export type { AuthStatusResponse, User } from './user.service';
+export { getAuthStatus, logout, logoutAll } from './user.service';

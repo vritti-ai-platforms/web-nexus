@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { clearToken, scheduleTokenRefresh, setToken } from '@vritti/quantum-ui/axios';
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
-import { useUser } from '../hooks';
+import { useAuthStatus } from '../hooks';
 import type { User } from '../services';
 
 interface AuthContextValue {
@@ -21,15 +21,15 @@ const AuthContext = createContext<AuthContextValue>({
 // Provides auth state to the app — after login/logout, reload the page to refresh
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const queryClient = useQueryClient();
-  const { data: authStatus, isLoading } = useUser();
+  const { data: authResponse, isLoading, isSuccess } = useAuthStatus();
 
   // Store access token in memory and schedule proactive refresh
   useEffect(() => {
-    if (authStatus?.isAuthenticated && authStatus.accessToken && authStatus.expiresIn) {
-      setToken(authStatus.accessToken);
-      scheduleTokenRefresh(authStatus.expiresIn);
+    if (isSuccess && authResponse.isAuthenticated && authResponse.accessToken && authResponse.expiresIn) {
+      setToken(authResponse.accessToken);
+      scheduleTokenRefresh(authResponse.expiresIn);
     }
-  }, [authStatus]);
+  }, [isSuccess, authResponse]);
 
   // Caller should reload page to '/' after calling logout
   const logout = useCallback(() => {
@@ -37,8 +37,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     queryClient.clear();
   }, [queryClient]);
 
-  const isAuthenticated = authStatus?.isAuthenticated ?? false;
-  const user = authStatus?.user;
+  const isAuthenticated = authResponse?.isAuthenticated ?? false;
+  const user = authResponse?.user;
 
   const contextValue = useMemo<AuthContextValue>(
     () => ({ user, isLoading, isAuthenticated, logout }),
