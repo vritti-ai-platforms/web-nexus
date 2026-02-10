@@ -1,10 +1,12 @@
 import { type UseMutationOptions, type UseQueryOptions, useMutation, useQuery } from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
 import { type AuthStatusResponse, getAuthStatus, logout, logoutAll } from '../services';
+import type { AxiosError } from 'axios';
 
-type UseAuthStatusOptions = Omit<UseQueryOptions<AuthStatusResponse, Error>, 'queryKey' | 'queryFn'>;
+type UseAuthStatusOptions = Omit<UseQueryOptions<AuthStatusResponse, AxiosError>, 'queryKey' | 'queryFn'>;
 
 export function useAuthStatus(options?: UseAuthStatusOptions) {
-  return useQuery<AuthStatusResponse, Error>({
+  return useQuery<AuthStatusResponse, AxiosError>({
     queryKey: ['auth', 'status'],
     queryFn: getAuthStatus,
     staleTime: Infinity,
@@ -13,19 +15,19 @@ export function useAuthStatus(options?: UseAuthStatusOptions) {
   });
 }
 
-type UseLogoutOptions = Omit<UseMutationOptions<void, Error, void>, 'mutationFn'>;
+type UseLogoutOptions = Omit<UseMutationOptions<void, AxiosError, void>, 'mutationFn'>;
 
 export function useLogout(options?: UseLogoutOptions) {
-  return useMutation<void, Error, void>({
+  return useMutation<void, AxiosError, void>({
     mutationFn: logout,
     ...options,
   });
 }
 
-type UseLogoutAllOptions = Omit<UseMutationOptions<void, Error, void>, 'mutationFn'>;
+type UseLogoutAllOptions = Omit<UseMutationOptions<void, AxiosError, void>, 'mutationFn'>;
 
 export function useLogoutAll(options?: UseLogoutAllOptions) {
-  return useMutation<void, Error, void>({
+  return useMutation<void, AxiosError, void>({
     mutationFn: logoutAll,
     ...options,
   });
