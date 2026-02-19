@@ -3,13 +3,24 @@ import { pluginModuleFederation } from '@module-federation/rsbuild-plugin';
 import { defineConfig, loadEnv } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 // Load environment variables from .env files
-// By default, loadEnv looks for PUBLIC_ prefixed variables
-const { publicVars } = loadEnv();
+const { publicVars, parsed } = loadEnv();
 
 const useHttps = process.env.USE_HTTPS === 'true';
 const protocol = useHttps ? 'https' : 'http';
-const defaultApiHost = `${protocol}://local.vrittiai.com:3000`;
+const host = 'local.vrittiai.com';
+const defaultApiHost = `${protocol}://${host}:3000`;
+
+// Static dev remotes enable MF live reload (plugin needs URLs to watch)
+const devRemotes: Record<string, string> = {};
+if (isDev && parsed.PUBLIC_AUTH_MF_PORT) {
+  devRemotes.VrittiAuth = `vritti_auth@${protocol}://${host}:${parsed.PUBLIC_AUTH_MF_PORT}/mf-manifest.json`;
+}
+if (isDev && parsed.PUBLIC_CLOUD_MF_PORT) {
+  devRemotes.VrittiCloud = `vritti_cloud@${protocol}://${host}:${parsed.PUBLIC_CLOUD_MF_PORT}/mf-manifest.json`;
+}
 
 export default defineConfig({
   source: {
@@ -47,7 +58,7 @@ export default defineConfig({
     pluginReact(),
     pluginModuleFederation({
       name: 'vritti_nexus_host',
-      remotes: {}, // Using runtime registration
+      remotes: devRemotes,
       shared: {
         react: {
           singleton: true,
