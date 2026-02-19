@@ -1,2 +1,1 @@
-// User hooks
-export { useLogout, useLogoutAll, useUser } from './useUser';
+export { useAuthStatus, useLogout, useLogoutAll } from './useUser';
