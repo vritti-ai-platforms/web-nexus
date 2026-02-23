@@ -3,13 +3,14 @@ import axios from '@vritti/quantum-ui/axios';
 export interface User {
   id: string;
   email: string;
-  firstName?: string | null;
-  lastName?: string | null;
+  fullName: string;
+  displayName: string;
   emailVerified: boolean;
   phoneVerified: boolean;
   accountStatus: 'PENDING' | 'ACTIVE' | 'SUSPENDED' | 'DEACTIVATED';
   onboardingStep: 'EMAIL_VERIFICATION' | 'PASSWORD_SETUP' | 'PHONE_VERIFICATION' | 'TWO_FACTOR_SETUP' | 'COMPLETE';
   hasPassword: boolean;
+  signupMethod: 'email' | 'oauth';
   phone?: string | null;
   phoneCountry?: string | null;
   profilePictureUrl?: string | null;
