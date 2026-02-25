@@ -1,8 +1,8 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { clearToken, scheduleTokenRefresh, setToken } from '@vritti/quantum-ui/axios';
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
-import { useAuthStatus } from '../hooks';
-import type { User } from '../services';
+import { useAuthStatus } from '@hooks/useUser';
+import type { User } from '@services/user.service';
 
 interface AuthContextValue {
   user: User | undefined;

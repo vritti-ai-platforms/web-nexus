@@ -11,13 +11,10 @@ const { publicVars, parsed } = loadEnv();
 const useHttps = process.env.USE_HTTPS === 'true';
 const protocol = useHttps ? 'https' : 'http';
 const host = 'local.vrittiai.com';
-const defaultApiHost = `${protocol}://${host}:3000`;
+const defaultApiHost = `${protocol}://${host}:3001`;
 
 // Static dev remotes enable MF live reload (plugin needs URLs to watch)
 const devRemotes: Record<string, string> = {};
-if (isDev && parsed.PUBLIC_AUTH_MF_PORT) {
-  devRemotes.VrittiAuth = `vritti_auth@${protocol}://${host}:${parsed.PUBLIC_AUTH_MF_PORT}/mf-manifest.json`;
-}
 if (isDev && parsed.PUBLIC_CLOUD_MF_PORT) {
   devRemotes.VrittiCloud = `vritti_cloud@${protocol}://${host}:${parsed.PUBLIC_CLOUD_MF_PORT}/mf-manifest.json`;
 }
@@ -38,7 +35,7 @@ export default defineConfig({
     ],
   },
   server: {
-    port: 3012,
+    port: 3013,
     ...(useHttps && {
       https: {
         key: fs.readFileSync('./certs/local.vrittiai.com+4-key.pem'),

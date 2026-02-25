@@ -15,10 +15,13 @@
     "preview": "rsbuild preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@module-federation/enhanced": "^0.22.1",
     "@module-federation/rsbuild-plugin": "^0.22.1",
     "@module-federation/runtime": "^0.22.1",
     "@tanstack/react-query": "^5.90.19",
+    "react-hook-form": "^7.71.1",
+    "zod": "^4.3.5",
     "@vritti/quantum-ui": "0.2.10",
     "axios": "^1.13.2",
     "lucide-react": "^0.562.0",
