@@ -513,3 +513,13 @@ pnpm dev:ssl:cloud          # HTTPS mode with cloud remote
 - Remote microfrontends MUST run on the same protocol as the host
 - If host runs on HTTPS, all remotes must also run on HTTPS
 - Port conflicts will prevent the application from starting
+
+## Convention Rules
+
+See `.claude/rules/` for detailed pattern documentation:
+- `frontend-conventions.md` — Component patterns, Tailwind v4, quantum-ui usage
+- `frontend-file-structure.md` — File/folder organization
+- `frontend-hook.md` — TanStack Query hook conventions
+- `frontend-service.md` — Axios service conventions
+- `comment-style.md` — Comment style rules
+- `export-conventions.md` — Export patterns
